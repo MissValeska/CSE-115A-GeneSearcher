@@ -17,16 +17,11 @@ data = []
 # Creating an empty dictionary 
 myDict = {}
 def parse(filename):
-	"""
-	This function greets to
-	the person passed in as
-	a parameter
-	"""
+	# Open the file and skip comments
 	with open(filename) as f:
 		i = 0;
 		while True:
 			line = f.readline();
-			#skip comments in file
 			if not line.startswith('#'):
 				break;
 		
