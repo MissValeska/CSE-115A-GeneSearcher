@@ -29,15 +29,30 @@ class opensnp_Parser:
 
     # match users specific genotype with with one from the list of traits
     def match_genotype(traits, genotype):
-    
         return traits[genotype]
 
 
 # Main function for testing
 if __name__ == "__main__":
-    # Example rsid 
+    # Example rsid with data 
     rsid = "rs4988235"
     parser = opensnp_Parser()
     traits = parser.fetch_RSID_info(rsid)
-    for trait in traits:
-        print(trait, "-", traits[trait])
+    print("Example rsid: ", rsid)
+    print("Number of traits returned: ", len(traits))
+    if len(traits) > 0:
+        for trait in traits:
+            print(trait, "-", traits[trait])
+    else:
+        print("No data found for this RSID")
+
+    # Example rsid that has no data
+    rsid = "rs548049170"
+    traits = parser.fetch_RSID_info(rsid)
+    print("\nExample rsid: ", rsid)
+    print("Number of traits returned: ", len(traits))
+    if len(traits) > 0:
+        for trait in traits:
+            print(trait, "-", traits[trait])
+    else:
+        print("No data found for this RSID")
