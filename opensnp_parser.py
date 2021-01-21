@@ -10,12 +10,16 @@ import requests
 class opensnp_Parser:
     base_url = "https://opensnp.org/snps/json/annotation/"
 
+    def __init__(self):
+        # Create session to speed up subsequent requests
+        self.session = requests.Session() 
+
     def fetch_RSID_info(self, rsid):
         url = self.base_url + rsid + ".json"
 
         # Fetch information using requests module
         # and parse with json module
-        response = requests.get(url)
+        response = self.session.get(url)
         data = json.loads(response.text)
 
         # Extract information that we are interested in. In our
@@ -34,11 +38,13 @@ class opensnp_Parser:
 
 # Main function for testing
 if __name__ == "__main__":
-    # Example rsid with data 
-    rsid = "rs4988235"
+    # Parser object
     parser = opensnp_Parser()
+
+    # Example rsid that has no data
+    rsid = "rs548049170"
     traits = parser.fetch_RSID_info(rsid)
-    print("Example rsid: ", rsid)
+    print("\nExample rsid: ", rsid)
     print("Number of traits returned: ", len(traits))
     if len(traits) > 0:
         for trait in traits:
@@ -46,10 +52,10 @@ if __name__ == "__main__":
     else:
         print("No data found for this RSID")
 
-    # Example rsid that has no data
-    rsid = "rs548049170"
+    # Example rsid with data 
+    rsid = "rs4988235"
     traits = parser.fetch_RSID_info(rsid)
-    print("\nExample rsid: ", rsid)
+    print("Example rsid: ", rsid)
     print("Number of traits returned: ", len(traits))
     if len(traits) > 0:
         for trait in traits:
