@@ -33,7 +33,12 @@ class opensnp_Parser:
 
     # match users specific genotype with with one from the list of traits
     def match_genotype(traits, genotype):
-        return traits[genotype]
+        rev_genotype = tuple(reversed(genotype))
+
+        if genotype in traits:
+            return traits[genotype]
+        elif rev_genotype in traits:
+            return traits[rev_genotype]
 
 
 # Main function for testing
