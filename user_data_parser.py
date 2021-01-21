@@ -5,7 +5,7 @@
 # necessary data.
 #---------------------------------------------------------------------------
 
-class User_Data_Parser(self, filename):
+def parse_user_data(filename):
     rsids = dict()
     
     with open(filename) as f:
@@ -27,10 +27,12 @@ class User_Data_Parser(self, filename):
         # for e in genotype:
         # 	genotype[e] = genotype[e].rstrip("\n")
 
-filename = input('Enter a filename: ')
-user_rsids = parse(filename)
 
-for rsid in user_rsids:
-    print(rsid, " : ", user_rsids[rsid])
+if __name__ == "__main__":
+    filename = input('Enter a filename: ')
+    user_rsids = parse_user_data(filename)
+
+    for rsid in user_rsids:
+        print(rsid, " : ", user_rsids[rsid])
 
 
