@@ -26,9 +26,11 @@ class opensnp_Parser:
         # case the traits assocaiated with that particular RSID
         traits = {}
         for each in data["snp"]["annotations"]["snpedia"]:
-            traits[(each["url"][-4],each["url"][-2])] = each["summary"][0:len(each["summary"])-1]
+            traits[each["url"][-4] + each["url"][-2]] = each["summary"][0:len(each["summary"])-1]
             #print(each["summary"])
+            
 
+        print(traits)
         return traits
 
     # match users specific genotype with with one from the list of traits
