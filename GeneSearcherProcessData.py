@@ -12,8 +12,8 @@ if __name__ == "__main__":
         print(rsid, ":", user_genetic_data[rsid], end="")
         traits = parser.fetch_RSID_info(rsid)
         if len(traits) != 0:
-            genotype = (user_genetic_data[rsid][2][0],user_genetic_data[rsid][2][1])
-            print(" - " , opensnp_Parser.match_genotype(traits, genotype))
+            genotype = user_genetic_data[rsid][2][0] + user_genetic_data[rsid][2][1]
+            print(" - " , parser.match_genotype(traits, genotype))
             #print(traits)
         else:
             print(" - No data exists for this RSID")
