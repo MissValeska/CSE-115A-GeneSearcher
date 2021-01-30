@@ -33,8 +33,22 @@ class opensnp_Parser:
         print(traits)
         return traits
 
+    # Determines the complement of the passed in genotype and returns a tuple of
+    # allele pairs that are equivalent when searching for matches.
+    # Code provided by Valeska
+    def genotype_complement(alleles):
+        compDict = {'A' : 'T',
+                    'G' : 'C',
+                    'T' : 'A',
+                    'C' : 'G' }
+        return compDict[alleles[0]] + compDict[alleles[1]],
+               compDict[alleles[1]] + compDict[alleles[0]],
+               alleles,
+               alleles[-1]
+    
     # match users specific genotype with with one from the list of traits
     def match_genotype(traits, genotype):
+        print genotype_complement(genotype):
         rev_genotype = tuple(reversed(genotype))
 
         if genotype in traits:
