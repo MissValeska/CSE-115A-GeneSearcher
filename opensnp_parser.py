@@ -36,25 +36,28 @@ class opensnp_Parser:
     # Determines the complement of the passed in genotype and returns a tuple of
     # allele pairs that are equivalent when searching for matches.
     # Code provided by Valeska
-    def genotype_complement(alleles):
+    def complement(alleles):
         compDict = {'A' : 'T',
                     'G' : 'C',
                     'T' : 'A',
                     'C' : 'G' }
-        return compDict[alleles[0]] + compDict[alleles[1]],
-               compDict[alleles[1]] + compDict[alleles[0]],
-               alleles,
-               alleles[-1]
+        return compDict[alleles[0]] + compDict[alleles[1]], \
+               compDict[alleles[1]] + compDict[alleles[0]], \
+               alleles, \
+               alleles[-1::-1]
     
-    # match users specific genotype with with one from the list of traits
-    def match_genotype(traits, genotype):
-        print genotype_complement(genotype):
-        rev_genotype = tuple(reversed(genotype))
-
-        if genotype in traits:
-            return traits[genotype]
-        elif rev_genotype in traits:
-            return traits[rev_genotype]
+    # Match users specific genotype with with one from the list of traits. We first
+    # compute the complements of the passed in genotype and create a list containing
+    # both the allele pair passed in, its complement, and their reverse, as all four
+    # of these options should be equivalent. We then check if any of those values
+    # are in the traits dictionary and return any match
+    def match_genotype(self, traits, genotype):
+        compliments = opensnp_Parser.complement(genotype)
+        # print(compliments)
+        for pair in compliments:
+            if pair  in traits:
+                return traits[pair]
+        return None
 
 
 # Main function for testing
@@ -70,6 +73,7 @@ if __name__ == "__main__":
     if len(traits) > 0:
         for trait in traits:
             print(trait, "-", traits[trait])
+        print("User match on ", parser.match_genotype(traits, 'CT'))
     else:
         print("No data found for this RSID")
 
@@ -81,5 +85,6 @@ if __name__ == "__main__":
     if len(traits) > 0:
         for trait in traits:
             print(trait, "-", traits[trait])
+        print("User match on ", parser.match_genotype(traits, 'CT'))
     else:
         print("No data found for this RSID")
