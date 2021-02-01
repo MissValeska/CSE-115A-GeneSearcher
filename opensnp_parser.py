@@ -30,7 +30,7 @@ class opensnp_Parser:
             #print(each["summary"])
             
 
-        print(traits)
+        # print(traits)
         return traits
 
     # Determines the complement of the passed in genotype and returns a tuple of
