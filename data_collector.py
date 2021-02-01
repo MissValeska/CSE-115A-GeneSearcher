@@ -36,11 +36,17 @@ class data_collector():
     
     # reloads the structure from a JSON file
     def load(self, file):
-        pass
+        
+        with open (file) as json_file:
+            self.RSID_data = json.load(json_file)
     
     # writes the dataset to a JSON file
     def write(self, file):
-        pass
+        
+        with open(file, "w") as out:
+            json.dump(self.RSID_data, out)
+            
+        
 
     def print(self):
         print("RSID data stored in collector:")
@@ -54,3 +60,4 @@ if __name__ == "__main__":
     dc.update(rsid_list)
     print("Collection complete")
     dc.print()
+    dc.write("rsidj.json")
