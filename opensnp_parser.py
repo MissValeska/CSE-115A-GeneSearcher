@@ -25,6 +25,15 @@ class opensnp_Parser:
         self.RSID_data = {}
         self.queriesMade = 0
 
+    # extracts just the information about the traits associated with a
+    # particular genotype from rsid data.
+    def extract_traits(data):
+        traits = {}
+        for each in data:
+            traits[each["url"][-4] + each["url"][-2]] = each["summary"][0:len(each["summary"])-1]
+        return traits
+
+    
     # Simple, single threaded rsid lookup will return the a dictionary of traits
     # with format {genotype : phenotype}
     def fetch_RSID_info(self, rsid):
@@ -37,11 +46,7 @@ class opensnp_Parser:
 
         # Extract information that we are interested in. In our
         # case the traits assocaiated with that particular RSID
-        traits = {}
-        for each in data["snp"]["annotations"]["snpedia"]:
-            traits[(each["url"][-4],each["url"][-2])] = each["summary"][0:len(each["summary"])-1]
-
-        # print(traits)
+        traits = opensnp_Parser.extract_traits(data["snp"]["annotations"]["snpedia"])
         return traits
     
     # Worker function for multi-threaded bulk lookup method
@@ -60,28 +65,36 @@ class opensnp_Parser:
             #  Currently set to 200 because the latency per request is lower.
             ## Finding the right combination of number of threads and items per request is challening
             rsid_list = list()
-            while (not self.lookup_q.empty()) and len(rsid_list) < 400:
+            while len(rsid_list) < 400:
                 item = self.lookup_q.get()
                 rsid_list.append(item)
-                self.lookup_q.task_done()
+                if self.lookup_q.empty():
+                    break
             
             # If the rsid_list is not empty try to construct request and send
+            print("formatting request from", rsid_list)
             if len(rsid_list) > 0:
                 rsid_string = ",".join(rsid_list)
-                
                 request_url = self.base_url + rsid_string + ".json"
+                print(request_url)
+
                 response = bulk_session.get(request_url)
                 data = json.loads(response.text)
+                print("Response data:\n", data)
                 self.queriesMade += len(rsid_list)
 
                 if len(rsid_list) > 1:
                     for rsid in data:
                         print("Queries performed: ", self.queriesMade, " - ", rsid, " - ", data[rsid]["annotations"]["snpedia"])
-                        self.RSID_data[rsid] = data[rsid]["annotations"]["snpedia"]
+                        self.RSID_data[rsid] = opensnp_Parser.extract_traits(data[rsid]["annotations"]["snpedia"])
                 else: # len of rsid_list == 1
-                    print("Single item query! : (")
                     print("Queries performed: ", self.queriesMade, " - ",rsid_list[0], " - ", data["snp"]["annotations"]["snpedia"])
-                    self.RSID_data[rsid_list[0]] = data["snp"]["annotations"]["snpedia"]
+                    self.RSID_data[rsid_list[0]] = opensnp_Parser.extract_traits(data["snp"]["annotations"]["snpedia"])
+                
+                # Signal task_done for each RSID taken off queue.
+                # important to do this last or program terminates before all data is processed
+                for i in range(len(rsid_list)):
+                    self.lookup_q.task_done()
 
     
     # Bulk RSID fetch takes in a list of rsids and requests the entire list
@@ -103,7 +116,7 @@ class opensnp_Parser:
         self.lookup_q.join() 
         print("Processing finished")
 
-        # Return the massive JSON data structure
+        # Return the massive dictionary of RSIDs and traits
         return self.RSID_data
 
 
