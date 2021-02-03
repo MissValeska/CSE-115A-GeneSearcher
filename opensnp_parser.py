@@ -72,23 +72,22 @@ class opensnp_Parser:
                     break
             
             # If the rsid_list is not empty try to construct request and send
-            print("formatting request from", rsid_list)
+            # print("formatting request from", rsid_list)
             if len(rsid_list) > 0:
                 rsid_string = ",".join(rsid_list)
                 request_url = self.base_url + rsid_string + ".json"
-                print(request_url)
+                # print(request_url)
 
                 response = bulk_session.get(request_url)
                 data = json.loads(response.text)
-                print("Response data:\n", data)
+                # print("Response data:\n", data)
                 self.queriesMade += len(rsid_list)
+                print("Queries performed: ", self.queriesMade)
 
                 if len(rsid_list) > 1:
                     for rsid in data:
-                        print("Queries performed: ", self.queriesMade, " - ", rsid, " - ", data[rsid]["annotations"]["snpedia"])
                         self.RSID_data[rsid] = opensnp_Parser.extract_traits(data[rsid]["annotations"]["snpedia"])
                 else: # len of rsid_list == 1
-                    print("Queries performed: ", self.queriesMade, " - ",rsid_list[0], " - ", data["snp"]["annotations"]["snpedia"])
                     self.RSID_data[rsid_list[0]] = opensnp_Parser.extract_traits(data["snp"]["annotations"]["snpedia"])
                 
                 # Signal task_done for each RSID taken off queue.
@@ -110,7 +109,7 @@ class opensnp_Parser:
         # Enqueue list of RSIDS that need to be queried
         for rsid in rsids:
             self.lookup_q.put(rsid)    
-        print("RSID lookups enqued")
+        print(len(rsids), " RSID lookups enqued")
         
         # Wait for processing to finish
         self.lookup_q.join() 

@@ -8,31 +8,24 @@ if __name__ == "__main__":
 
     # Read users genetic data from file
     user_genetic_data = user_data_parser.parse_user_data(file)
+    ### Below is short dummy list of testing. To test comment above line
+    #   out and uncomment below
+    # user_genetic_data = {"rs548049170" : ["","","CT"], "rs4988235" : ["","","CT"]}
     rsids = list()
     
+    # Generate list of RSID's to request
     for rsid in user_genetic_data:
-<<<<<<< HEAD:GeneSearcherProcessData.py
-        print(rsid, ":", user_genetic_data[rsid], end="")
-        traits = parser.fetch_RSID_info(rsid)
-        if len(traits) != 0:
-            genotype = user_genetic_data[rsid][2][0] + user_genetic_data[rsid][2][1]
-            print(" - " , parser.match_genotype(traits, genotype))
-            #print(traits)
-        else:
-            print(" - No data exists for this RSID")
-=======
         rsids.append(rsid)
->>>>>>> bulk-data-request:GeneSearcherTestProgram.py
 
-    parser.fetch_bulk_RSID_info(rsids)
+    # Have the parser make the requests.
+    data = parser.fetch_bulk_RSID_info(rsids)
 
-    #     print(rsid, ":", user_genetic_data[rsid], end="")
-    #     traits = parser.fetch_RSID_info(rsid)
-    #     if len(traits) != 0:
-    #         genotype = (user_genetic_data[rsid][2][0],user_genetic_data[rsid][2][1])
-    #         print(" - " , opensnp_Parser.match_genotype(traits, genotype))
-    #         #print(traits)
-    #     else:
-    #         print(" - No data exists for this RSID")
+    for rsid in data:
+        if len(data[rsid]) > 0: 
+            print(rsid, " - ", data[rsid])
+            genotype = user_genetic_data[rsid][2]
+            print("  User has ", genotype, " - " , parser.match_genotype(data[rsid], genotype))
 
-    # for rsid in user_genetic_data
+        else:
+            print(rsid, " - no data for this value")
+
