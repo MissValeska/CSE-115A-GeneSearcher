@@ -65,7 +65,7 @@ class opensnp_Parser:
             #  Currently set to 200 because the latency per request is lower.
             ## Finding the right combination of number of threads and items per request is challening
             rsid_list = list()
-            while len(rsid_list) < 400:
+            while len(rsid_list) < 600:
                 item = self.lookup_q.get()
                 rsid_list.append(item)
                 if self.lookup_q.empty():
