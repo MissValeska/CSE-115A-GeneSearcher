@@ -1,21 +1,27 @@
 import user_data_parser
 from opensnp_parser import opensnp_Parser
-import sys
+import sys, time, requests, json
 
 if __name__ == "__main__":
     file = sys.argv[1]
-    parser = opensnp_Parser()
+    parser = opensnp_Parser(5)
 
     # Read users genetic data from file
     user_genetic_data = user_data_parser.parse_user_data(file)
+    rsids = list()
+    
     for rsid in user_genetic_data:
-        print(rsid, ":", user_genetic_data[rsid], end="")
-        traits = parser.fetch_RSID_info(rsid)
-        if len(traits) != 0:
-            genotype = (user_genetic_data[rsid][2][0],user_genetic_data[rsid][2][1])
-            print(" - " , opensnp_Parser.match_genotype(traits, genotype))
-            #print(traits)
-        else:
-            print(" - No data exists for this RSID")
+        rsids.append(rsid)
 
-    #for rsid in user_genetic_data
+    parser.fetch_bulk_RSID_info(rsids)
+
+    #     print(rsid, ":", user_genetic_data[rsid], end="")
+    #     traits = parser.fetch_RSID_info(rsid)
+    #     if len(traits) != 0:
+    #         genotype = (user_genetic_data[rsid][2][0],user_genetic_data[rsid][2][1])
+    #         print(" - " , opensnp_Parser.match_genotype(traits, genotype))
+    #         #print(traits)
+    #     else:
+    #         print(" - No data exists for this RSID")
+
+    # for rsid in user_genetic_data
