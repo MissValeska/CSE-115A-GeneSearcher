@@ -78,7 +78,6 @@ if __name__ == "__main__":
 
     filename = sys.argv[1]
     rsid_list = get_snp_list(filename)
-    rsid_list = rsid_list[0:10000]
     
     # rsid_list = ["i713057",
     #              "rs548049170",
