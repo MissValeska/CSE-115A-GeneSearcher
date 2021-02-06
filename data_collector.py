@@ -78,7 +78,26 @@ if __name__ == "__main__":
 
     filename = sys.argv[1]
     rsid_list = get_snp_list(filename)
+    rsid_list.reverse()
+    #rsid_list = rsid_list[0:10000]
     
+    dc = data_collector(8)
+    tic = time.perf_counter()
+    dc.update_bulk(rsid_list)
+    toc = time.perf_counter()
+    dc.write("RSID_Data.json", "Interesting_RSIDs.json")
+    time_two = toc - tic
+    
+    print("Collection 2 complete")
+    print(f"Processing Time: {time_two:0.4f} seconds")
+
+    ## Some Stats
+    # @ 10,000 we get around 119 RSIDs per second (84 seconds)
+    # @ 100,000 we get around 129 RSIDs per second (775 seconds)
+    # @ 978,105 we get around ### RSIDs per second ()
+    
+    ## An RSID list you can use for testing with a mix of interesting and
+    ## empty RSIDs. Copy paste this below the rsid_list assignment above
     # rsid_list = ["i713057",
     #              "rs548049170",
     #              "rs4988235",
@@ -111,13 +130,3 @@ if __name__ == "__main__":
     #              "rs4680",
     #              "rs1333049",
     #              "rs1051730"]
-    
-    dc = data_collector(8)
-    tic = time.perf_counter()
-    dc.update_bulk(rsid_list)
-    toc = time.perf_counter()
-    dc.write("RSID_Data2.json", "Interesting_RSIDs2.json")
-    time_two = toc - tic
-    
-    print("Collection 2 complete")
-    print(f"Processing Time: {time_two:0.4f} seconds")

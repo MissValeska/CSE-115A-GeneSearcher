@@ -1,4 +1,4 @@
-import json, requests, threading, queue
+import json, requests, threading, queue, time
 
 # @ 200 RSIDs per request
 # ~1.5 for full file
@@ -58,13 +58,13 @@ class opensnp_Parser:
     # later retrieval 
     def fetch_bulk_worker(self):
         bulk_session = requests.Session()
+        rsid_list = list()
         while True:
 
             ## Pop up to 600 items off work queue and add to local rsid_list
             #  for processing.
             #  Currently set to 200 because the latency per request is lower.
             ## Finding the right combination of number of threads and items per request is challening
-            rsid_list = list()
             while len(rsid_list) < 600:
                 item = self.lookup_q.get()
                 rsid_list.append(item)
@@ -72,28 +72,56 @@ class opensnp_Parser:
                     break
             
             # If the rsid_list is not empty try to construct request and send
-            # print("formatting request from", rsid_list)
             if len(rsid_list) > 0:
-                rsid_string = ",".join(rsid_list)
-                request_url = self.base_url + rsid_string + ".json"
-                # print(request_url)
+                # rsid_string = 
+                request_url = self.base_url + ",".join(rsid_list) + ".json"
 
-                response = bulk_session.get(request_url)
-                data = json.loads(response.text)
-                # print("Response data:\n", data)
-                self.queriesMade += len(rsid_list)
-                print("Queries performed: ", self.queriesMade)
+                try:
+                    # Request data and parse json
+                    response = bulk_session.get(request_url)
+                    try:
+                        data = json.loads(response.text)
+                    except:
+                        print("Error converting response to json")
+                        print(response.text)
+                        print(request_url)
 
-                if len(rsid_list) > 1:
+                    # For each item in rsid_list extract from data object and
+                    # record in objects rsid_dasta field
                     for rsid in data:
-                        self.RSID_data[rsid] = opensnp_Parser.extract_traits(data[rsid]["annotations"]["snpedia"])
-                else: # len of rsid_list == 1
-                    self.RSID_data[rsid_list[0]] = opensnp_Parser.extract_traits(data["snp"]["annotations"]["snpedia"])
+                        try:
+                            if rsid == "snp": # This only happens when a single request is returned
+                                self.RSID_data[rsid_list[0]] = opensnp_Parser.extract_traits(data["snp"]["annotations"]["snpedia"])
+                            else:
+                                self.RSID_data[rsid] = opensnp_Parser.extract_traits(data[rsid]["annotations"]["snpedia"])
+                        except:
+                            print("Error reading returned data:")
+                            print("Data for ", rsid, ":")
+                            print(data[rsid])
+                            print(response.text)
+                    
+                    # Signal task_done for each RSID taken off queue and update queries made.
+                    # important to do this last or program terminates before all data is processed
+                    for i in range(len(rsid_list)):
+                        self.lookup_q.task_done()
+                    self.queriesMade += len(rsid_list)
+
+                    # Print out the number of queries made for monitoring
+                    # Remove this when code "works"
+                    print("Queries performed: ", self.queriesMade)
+                    
+                    # Clear the list
+                    rsid_list.clear()
                 
-                # Signal task_done for each RSID taken off queue.
-                # important to do this last or program terminates before all data is processed
-                for i in range(len(rsid_list)):
-                    self.lookup_q.task_done()
+                except:
+                    # Request new session and try again in 30 seconds
+                    print("Error making request - Requesting new session")
+                    print("List of RSIDs in failed request:")
+                    print(rsid_list)
+                    # print("Server returned: ")
+                    # print(response.text)
+                    time.sleep(30)
+                    bulk_session = requests.Session()
 
     
     # Bulk RSID fetch takes in a list of rsids and requests the entire list
