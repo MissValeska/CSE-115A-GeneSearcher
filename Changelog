@@ -1,0 +1,21 @@
+----------------------- CHANGELOG ------------------------
+Done:
+    - Basic Format (Frames)
+    - Basic Button
+    - Upload Functionality
+    - Display of File to be parsed
+    - Storage of File to be Parsed
+
+In progress:
+    - Link with Back End
+        - Parse functionality
+        - Link to cloud
+        - Recieve results
+    - Display Results -> Text Box
+
+NOTES:
+    - Having issues with Text Box overwriting Frame area
+    - Can display data in table format through various means -- may use pandas?
+        - Convert results to pandas db -> iterable -> display by rows columns
+        - Will require more research
+    - If having trouble with display, can also output file.
