@@ -1,10 +1,12 @@
 ----------------------- CHANGELOG ------------------------
 Done:
     - Basic Format (Frames)
-    - Basic Button
+        -Updated for resizing
+    - Basic Buttons
     - Upload Functionality
     - Display of File to be parsed
     - Storage of File to be Parsed
+    - Can modify design (background/frame colors)
 
 In progress:
     - Link with Back End
