@@ -12,6 +12,9 @@ def load_data_set_from_file(data_file):
         data_set = json.load(f) 
     return data_set
 
+def load_data_set_from_server():
+    pass
+
 def process_user_data(user_data, data_set):
     # Including opensnp parser to use it's functions for matching user genotype
     # to dataset. But we should probably put that functionality elsewhere at
@@ -26,6 +29,12 @@ def process_user_data(user_data, data_set):
             if user_genotype not in {"--", "DD", "II"}:
                 report[rsid] = parser.match_genotype(data_set[rsid], user_genotype)
     return report
+
+def user_report_to_json():
+    pass
+
+def user_report_to_csv():
+    pass
 
 
 if __name__ == "__main__":
@@ -45,9 +54,9 @@ if __name__ == "__main__":
                                 "common in complete genomic",
                                 "common in complete genomics",
                                 "No summary provided",
-                                "norma",
-                                "normal",
-                                "Normal",
+                                # "norma",
+                                # "normal",
+                                # "Normal",
                                 "commo",
                                 "averag",
                                 "average",
