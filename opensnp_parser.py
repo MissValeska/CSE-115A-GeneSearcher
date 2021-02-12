@@ -155,10 +155,13 @@ class opensnp_Parser:
                     'G' : 'C',
                     'T' : 'A',
                     'C' : 'G' }
-        return compDict[alleles[0]] + compDict[alleles[1]], \
-               compDict[alleles[1]] + compDict[alleles[0]], \
-               alleles, \
-               alleles[-1::-1]
+        if len(alleles) == 2:
+            return compDict[alleles[0]] + compDict[alleles[1]], \
+                   compDict[alleles[1]] + compDict[alleles[0]], \
+                   alleles, \
+                   alleles[-1::-1]
+        else:
+            return alleles, compDict[alleles]
     
     # Match users specific genotype with with one from the list of traits. We first
     # compute the complements of the passed in genotype and create a list containing
