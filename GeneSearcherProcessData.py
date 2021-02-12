@@ -1,6 +1,6 @@
 import user_data_parser
 from opensnp_parser import opensnp_Parser
-import sys, time, requests, json
+import sys, time, requests, json, csv
 
 def load_user_data(data_file):
     user_data = user_data_parser.parse_user_data(data_file)
@@ -27,29 +27,8 @@ def process_user_data(user_data, data_set):
             user_genotype = user_data[rsid][2]
             # print(rsid, " -", user_genotype)
             if user_genotype not in {"--", "DD", "II"}:
-                report[rsid] = parser.match_genotype(data_set[rsid], user_genotype)
-    return report
-
-def user_report_to_json():
-    pass
-
-def user_report_to_csv():
-    pass
-
-
-if __name__ == "__main__":
-    user_data_file = sys.argv[1]
-    data_file = sys.argv[2]
-
-    parser = opensnp_Parser(5)
-
-    # Read users genetic data from file
-    user_genetic_data = load_user_data(user_data_file)
-    data_set = load_data_set_from_file(data_file)
-    report = process_user_data(user_genetic_data, data_set)
-
-    for item in report:
-        if report[item] not in {"common in clinva",
+                expression = parser.match_genotype(data_set[rsid], user_genotype)
+                if expression not in {"common in clinva",
                                 "common in clinvar",
                                 "common in complete genomic",
                                 "common in complete genomics",
@@ -64,4 +43,31 @@ if __name__ == "__main__":
                                 "common on affy axiom dat",
                                 "common on affy axiom data",
                                 None}:
-            print(item, " - ", report[item])
+                    report[rsid] = (user_genotype, expression)
+    return report
+
+def user_report_to_json(user_data, filename):
+    with open(filename, "w") as outfile:
+        json.dump(user_data, outfile)
+
+def user_report_to_csv(user_data, filename):
+    with open(filename, "w") as outfile:
+        for rsid in user_data:
+            outfile.write("%s,%s,%s\n"%(rsid, user_data[rsid][0], user_data[rsid][1]))
+
+if __name__ == "__main__":
+    user_data_file = sys.argv[1]
+    data_file = sys.argv[2]
+
+    parser = opensnp_Parser(5)
+
+    # Read users genetic data from file
+    user_genetic_data = load_user_data(user_data_file)
+    data_set = load_data_set_from_file(data_file)
+    report = process_user_data(user_genetic_data, data_set)
+
+    for item in report:
+        print(item, " - ", report[item])
+
+    user_report_to_json(report, "report.json")
+    user_report_to_csv(report, "report.csv")
