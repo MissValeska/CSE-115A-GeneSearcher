@@ -13,7 +13,10 @@ def load_data_set_from_file(data_file):
     return data_set
 
 def load_data_set_from_server():
-    pass
+    url = "https://playground-53aee-default-rtdb.firebaseio.com/.json"
+    json_data = requests.get(url)
+    data_set = json.loads(json_data.text)
+    return data_set
 
 def process_user_data(user_data, data_set):
     # Including opensnp parser to use it's functions for matching user genotype
@@ -57,17 +60,26 @@ def user_report_to_csv(user_data, filename):
 
 if __name__ == "__main__":
     user_data_file = sys.argv[1]
-    data_file = sys.argv[2]
+    if len(sys.argv) == 3:
+        data_file = sys.argv[2]
+    else:
+        data_file = None
 
     parser = opensnp_Parser(5)
 
     # Read users genetic data from file
     user_genetic_data = load_user_data(user_data_file)
-    data_set = load_data_set_from_file(data_file)
+    # Load the data set
+    if data_file != None:
+        data_set = load_data_set_from_file(data_file)
+    else:
+        data_set = load_data_set_from_server()
+
+    # Process users data and generate report data
     report = process_user_data(user_genetic_data, data_set)
 
+    # Output report to terminal and files 
     for item in report:
         print(item, " - ", report[item])
-
     user_report_to_json(report, "report.json")
     user_report_to_csv(report, "report.csv")
