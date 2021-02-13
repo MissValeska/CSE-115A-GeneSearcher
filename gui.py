@@ -1,3 +1,4 @@
+from app_utils import *
 import tkinter as tk
 from tkinter import Tk, Text, filedialog, BOTH, W, N, E, S, CENTER, NW, Y, LEFT, X, RIGHT, BOTTOM, END
 from tkinter.ttk import Frame, Button, Label, Style, LabelFrame
@@ -5,19 +6,6 @@ import os
 
 #Establish global storage for data_path for future parsing
 data_path = ""
-
-#open file dialog and create label to hold name, as well as store path.
-def o_log(frame):
-    filepath = filedialog.askopenfilename(initialdir='/', title='Select File', 
-            filetypes=(("spreadsheets", "*.csv"), ("all files", "*.*")))
-    u_lbl = tk.Label(frame, text=os.path.basename(filepath), bg='#a8327f')
-    u_lbl.place(relx=0.35, relwidth=0.3, relheight=1)
-
-    global data_path
-    data_path = filepath
-
-def parse():
-    print("Beginning parse on: " + data_path)
 
 class App(Frame):
 
@@ -29,7 +17,7 @@ class App(Frame):
         self.master.title("GeneSearcher")
         self.pack(fill=BOTH, expand=True)
 
-        background_image = tk.PhotoImage(file='./Assets/background3.png')
+        background_image = tk.PhotoImage(file='./GUI/Assets/background3.png')
         background_label = tk.Label(self, image=background_image)
         background_label.place(relwidth=1, relheight=1)
         background_label.image = background_image
@@ -45,7 +33,7 @@ class App(Frame):
 
         # create the widgets for each frame
         upload_button = tk.Button(top_frame, text='Upload Data', command=lambda : o_log(top_frame))
-        search_button = tk.Button(center, text='Begin Search!', command=lambda : parse())
+        search_button = tk.Button(center, text='Begin Search!', command=lambda : begin_search())
         r_lbl = tk.Label(btm_frame, text="Results:", bg='#a8327f', font=5)
         search_bar = tk.Entry(btm_frame)
         search_bar.insert(END, 'search for keywords...')
