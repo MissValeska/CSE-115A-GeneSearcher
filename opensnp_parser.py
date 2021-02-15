@@ -1,4 +1,4 @@
-import json, requests, threading, queue, time
+import json, requests, threading, queue, time, string
 
 # @ 200 RSIDs per request
 # ~1.5 for full file
@@ -146,7 +146,6 @@ class opensnp_Parser:
         # Return the massive dictionary of RSIDs and traits
         return self.RSID_data
 
-
     # Determines the complement of the passed in genotype and returns a tuple of
     # allele pairs that are equivalent when searching for matches.
     # Code provided by Valeska
@@ -155,13 +154,22 @@ class opensnp_Parser:
                     'G' : 'C',
                     'T' : 'A',
                     'C' : 'G' }
-        if len(alleles) == 2:
-            return compDict[alleles[0]] + compDict[alleles[1]], \
-                   compDict[alleles[1]] + compDict[alleles[0]], \
-                   alleles, \
-                   alleles[-1::-1]
+        alleles = alleles.upper()
+        # if len(alleles) == 2:
+        #     return compDict[alleles[0]] + compDict[alleles[1]], \
+        #            compDict[alleles[1]] + compDict[alleles[0]], \
+        #            alleles, \
+        #            alleles[-1::-1]
+        # else:
+        #     return alleles, compDict[alleles]
+        if(len(alleles) == 2 and "D" not in alleles and "I" not in alleles):
+            return compDict[alleles[0]] + compDict[alleles[1]], compDict[alleles[1]] + compDict[alleles[0]], alleles, alleles[-1::-1]
+        elif("D" in alleles or "I" in alleles and len(alleles) == 2):
+            return alleles, alleles[-1::-1]
+        elif("D" in alleles or "I" in alleles and len(alleles) == 1):
+            return alleles
         else:
-            return alleles, compDict[alleles]
+            return compDict[alleles[0]], alleles
     
     # Match users specific genotype with with one from the list of traits. We first
     # compute the complements of the passed in genotype and create a list containing

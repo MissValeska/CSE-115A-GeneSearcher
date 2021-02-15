@@ -1,5 +1,4 @@
 import user_data_parser
-from opensnp_parser import opensnp_Parser
 import sys, time, requests, json, csv
 
 def load_user_data(data_file):
@@ -18,19 +17,55 @@ def load_data_set_from_server():
     data_set = json.loads(json_data.text)
     return data_set
 
-def process_user_data(user_data, data_set):
-    # Including opensnp parser to use it's functions for matching user genotype
-    # to dataset. But we should probably put that functionality elsewhere at
-    # this point.
-    parser = opensnp_Parser(1)
+# Determines the complement of the passed in genotype and returns a tuple of
+# allele strings that are equivalent when searching for matches.
+# Code provided by Valeska
+def complement(alleles):
+    compDict = {'A' : 'T',
+                'G' : 'C',
+                'T' : 'A',
+                'C' : 'G' }
+    alleles = alleles.upper()
 
+    if(len(alleles) == 2 and "D" not in alleles and "I" not in alleles):
+        return compDict[alleles[0]] + compDict[alleles[1]], compDict[alleles[1]] + compDict[alleles[0]], alleles, alleles[-1::-1]
+    elif("D" in alleles or "I" in alleles and len(alleles) == 2):
+        return alleles, alleles[-1::-1]
+    elif("D" in alleles or "I" in alleles and len(alleles) == 1):
+        return alleles
+    else:
+        return compDict[alleles[0]], alleles
+
+    ## Old complement logic
+    # if len(alleles) == 2:
+    #     return compDict[alleles[0]] + compDict[alleles[1]], \
+    #            compDict[alleles[1]] + compDict[alleles[0]], \
+    #            alleles, \
+    #            alleles[-1::-1]
+    # else:
+    #     return alleles, compDict[alleles]
+
+# Match users specific genotype with with one from the list of traits. We first
+# compute the complements of the passed in genotype and create a list containing
+# both the allele pair passed in, its complement, and their reverse, as all four
+# of these options should be equivalent. We then check if any of those values
+# are in the traits dictionary and return any match
+def match_genotype(traits, genotype):
+    complements = complement(genotype)
+    # print(comlements)
+    for pair in complements:
+        if pair  in traits:
+            return traits[pair]
+    return None
+
+def process_user_data(user_data, data_set):
     report = dict()
     for rsid in user_data:
         if rsid in data_set:
             user_genotype = user_data[rsid][2]
             # print(rsid, " -", user_genotype)
-            if user_genotype not in {"--", "DD", "II"}:
-                expression = parser.match_genotype(data_set[rsid], user_genotype)
+            if user_genotype not in {"--"}:
+                expression = match_genotype(data_set[rsid], user_genotype)
                 if expression not in {"common in clinva",
                                 "common in clinvar",
                                 "common in complete genomic",
@@ -64,8 +99,6 @@ if __name__ == "__main__":
         data_file = sys.argv[2]
     else:
         data_file = None
-
-    parser = opensnp_Parser(5)
 
     # Read users genetic data from file
     user_genetic_data = load_user_data(user_data_file)
