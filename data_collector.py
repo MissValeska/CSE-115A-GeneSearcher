@@ -51,7 +51,7 @@ class data_collector():
         parser = opensnp_Parser(15)
         self.RSID_data = parser.fetch_bulk_RSID_info(RSIDs)
         for RSID in self.RSID_data:
-            if len(self.RSID_data[RSID]) > 0:
+            if len(self.RSID_data[RSID]["traits"]) > 0:
                 self.interesting_RSIDs.append(RSID)
     
     # reloads the structure from a JSON file
@@ -90,8 +90,7 @@ if __name__ == "__main__":
 
     filename = sys.argv[1]
     rsid_list = get_snp_list(filename)
-    rsid_list.reverse()
-    #rsid_list = rsid_list[0:10000] # uncomment this line to limit test length
+    rsid_list = rsid_list[0:10000] # uncomment this line to limit test length
     
     dc = data_collector(8)
     tic = time.perf_counter()
