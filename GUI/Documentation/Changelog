@@ -10,6 +10,7 @@ Done:
     - Link to (current)backend
     - Display results
     - Rudimentary Search bar Functionality
+    - Snap to searched word + words after with more clicks
 
 In progress:
     - Safety for functions without appropriate pre-conditions (search with no file etc)

@@ -6,7 +6,6 @@ import os
 
 #Establish global storage for data_path for future parsing
 data_path = ""
-disp_report = {}
 
 class App(Frame):
 

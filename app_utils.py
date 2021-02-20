@@ -4,8 +4,19 @@ from tkinter import Tk, Text, filedialog, BOTH, W, N, E, S, CENTER, NW, Y, LEFT,
 from tkinter.ttk import Frame, Button, Label, Style, LabelFrame
 import os
 
-#open file dialog and create label to hold name, as well as store path.
+#global storage for search word + amount of clicks
+word_storage = ""
+click_storage = 0
+
 def o_log(frame):
+
+    '''
+    Browsing files function. Opens the dialog to find file to upload via
+    button press. Also creates the label to hold the file name, and stores
+    the filepath in global data_path storage.
+    PARAMS : Frame to bind label to.
+    '''
+
     filepath = filedialog.askopenfilename(initialdir='/', title='Select File', 
             filetypes=(("spreadsheets", "*.csv"), ("all files", "*.*")))
     u_lbl = tk.Label(frame, text=os.path.basename(filepath), bg='#a8327f')
@@ -15,6 +26,14 @@ def o_log(frame):
     data_path = filepath
 
 def begin_search(text_frame):
+
+    '''
+    Primary backend linkage. Utilize functions from GeneSearcherProcessData.py
+    to load in user data from file and data from server to compare to. Generates
+    the report and sends it to display function. Bound to search_button in gui.py
+    PARAMS : text frame to display report in.
+    '''
+
     print("Beginning Search on: " + data_path)
 
     user_data = load_user_data(data_path)
@@ -26,6 +45,14 @@ def begin_search(text_frame):
     display_report(text_frame, report)
 
 def display_report(text_frame, report):
+
+    '''
+    Clears current text in display and replaces with current report text.
+    Format is newlines and a separating hyphen line. Also deactivates text
+    editing in box. Called from begin_search() function.
+    PARAMS : text box to display in and report to display.
+    '''
+
      # ----- implement display for report -----#
     text_frame.delete(1.0, END)
     line = "-----------------------------------------------"
@@ -44,9 +71,27 @@ def display_report(text_frame, report):
   #  print(tto_find.get())
 
 def find(entry, display):
-    
+
+    '''
+    Function bound to search bar functionality, specifically find_button
+    in gui.py. Stores word to be searched for and times the search has been
+    clicked globally, as well as init a list storing indices of highlighted
+    words. Word storage is used to check if a new word is entered so clicks
+    can be reset, and clicks will allow us to snap to specific stored indices
+    in the text display.
+    PARAMS : Entry text box and the text box displaying the report.
+    '''
+
+    idx_list = []
+    global word_storage
+    global click_storage
+
     display.tag_remove("search", '1.0', END)
     e = entry.get()
+
+    if e != word_storage:
+        click_storage = 0
+        word_storage = e
 
     if e:
         idx = '1.0'
@@ -56,6 +101,13 @@ def find(entry, display):
             if not idx: break
 
             lastidx = '%s+%dc' % (idx, len(e))
+            idx_list.append(idx)
 
             display.tag_add("search", idx, lastidx)
+
             idx = lastidx
+
+        if click_storage > len(idx_list) - 1:
+            click_storage = 0
+        if len(idx_list) != 0: display.see(idx_list[click_storage])
+        click_storage = click_storage + 1
