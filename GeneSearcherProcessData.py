@@ -78,7 +78,7 @@ if __name__ == "__main__":
     # Process users data and generate report data
     report = process_user_data(user_genetic_data, data_set)
 
-    # Output report to terminal and files 
+    # Output report to terminal and files
     for item in report:
         print(item, " - ", report[item])
     user_report_to_json(report, "report.json")
