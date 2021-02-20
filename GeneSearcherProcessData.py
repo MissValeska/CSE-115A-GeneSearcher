@@ -36,15 +36,6 @@ def complement(alleles):
     else:
         return compDict[alleles[0]], alleles
 
-    ## Old complement logic
-    # if len(alleles) == 2:
-    #     return compDict[alleles[0]] + compDict[alleles[1]], \
-    #            compDict[alleles[1]] + compDict[alleles[0]], \
-    #            alleles, \
-    #            alleles[-1::-1]
-    # else:
-    #     return alleles, compDict[alleles]
-
 # Match users specific genotype with with one from the list of traits. We first
 # compute the complements of the passed in genotype and create a list containing
 # both the allele pair passed in, its complement, and their reverse, as all four
@@ -65,7 +56,7 @@ def process_user_data(user_data, data_set):
             user_genotype = user_data[rsid][2]
             # print(rsid, " -", user_genotype)
             if user_genotype not in {"--"}:
-                expression = match_genotype(data_set[rsid], user_genotype)
+                expression = match_genotype(data_set[rsid]["traits"], user_genotype)
                 if expression not in {"common in clinva",
                                 "common in clinvar",
                                 "common in complete genomic",
@@ -81,7 +72,8 @@ def process_user_data(user_data, data_set):
                                 "common on affy axiom dat",
                                 "common on affy axiom data",
                                 None}:
-                    report[rsid] = (user_genotype, expression)
+                    weight = data_set[rsid]["weight"]
+                    report[rsid] = (user_genotype, expression, weight)
     return report
 
 def user_report_to_json(user_data, filename):
@@ -91,7 +83,7 @@ def user_report_to_json(user_data, filename):
 def user_report_to_csv(user_data, filename):
     with open(filename, "w") as outfile:
         for rsid in user_data:
-            outfile.write("%s,%s,%s\n"%(rsid, user_data[rsid][0], user_data[rsid][1]))
+            outfile.write("%s,%s,%s,%s\n"%(rsid, user_data[rsid][0], user_data[rsid][1], user_data[rsid][2]))
 
 if __name__ == "__main__":
     user_data_file = sys.argv[1]
