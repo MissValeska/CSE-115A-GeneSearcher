@@ -55,11 +55,17 @@ def display_report(text_frame, report):
 
      # ----- implement display for report -----#
     text_frame.delete(1.0, END)
-    line = "-----------------------------------------------"
+    line = "-----------------------------------------------\n"
 
     for item in report:
-        disp_str = item + " - " + report[item][0] + ", " + report[item][1] + "\n"
-        text_frame.insert("1.0", disp_str)
+        genotype = report[item][0]
+        expression = report[item][1]
+        weight = str(report[item][2])
+        # disp_str = item + " - " + genotype + ", " + expression + ", Weight: " + weight + "\n"
+        # text_frame.insert("1.0", disp_str)
+        text_frame.insert("1.0", expression + "\n")
+        text_frame.insert("1.0", "Genotype: %s - Weight of Evidence: %s\n" % (genotype, weight))
+        text_frame.insert("1.0", "RSID: %s\n" % item)
         text_frame.insert("1.0", line)
 
     text_frame.config(state=DISABLED)
