@@ -1,4 +1,4 @@
-import json, requests, threading, queue, time
+import json, requests, threading, queue, time, string
 
 # @ 200 RSIDs per request
 # ~1.5 for full file
@@ -33,6 +33,21 @@ class opensnp_Parser:
             traits[each["url"][-4] + each["url"][-2]] = each["summary"][0:len(each["summary"])-1]
         return traits
 
+    # Computes the weight of evidence based on the annotation data that is returned by the opensnp
+    # API. The API does not deliver the weight of evidence, but the formula is readily published
+    # on the opensnp website, so it has been reimplemented here because it is easier to compute
+    # than it would be to scrape the website.
+    # Weight of evidence = 1 * ( num mendeley articles)
+    #                    + 2 * ( num plos articles + num pgp_annotations + genome_gov_publications )
+    #                    + 5 * ( snpedia articles )
+    def compute_weight_of_evidence(annotation_data):
+        num_mendeley = len(annotation_data["mendeley"])
+        num_plos = len(annotation_data["plos"])
+        num_pgp = len(annotation_data["pgp_annotations"])
+        num_genome_gov = len(annotation_data["genome_gov_publications"])
+        num_snpedia = len(annotation_data["snpedia"])
+        return num_mendeley + (2 * (num_plos + num_pgp + num_genome_gov)) + (5 * num_snpedia)
+
     
     # Simple, single threaded rsid lookup will return the a dictionary of traits
     # with format {genotype : phenotype}
@@ -47,7 +62,9 @@ class opensnp_Parser:
         # Extract information that we are interested in. In our
         # case the traits assocaiated with that particular RSID
         traits = opensnp_Parser.extract_traits(data["snp"]["annotations"]["snpedia"])
-        return traits
+        weight_of_evidence = opensnp_Parser.compute_weight_of_evidence(data["snp"]["annotations"])
+        rsid_info = {"weight" : weight_of_evidence, "traits" : traits}
+        return rsid_info
     
     # Worker function for multi-threaded bulk lookup method
     # Opens a session, then while there are RSIDs on the look up queue
@@ -63,8 +80,6 @@ class opensnp_Parser:
 
             ## Pop up to 600 items off work queue and add to local rsid_list
             #  for processing.
-            #  Currently set to 200 because the latency per request is lower.
-            ## Finding the right combination of number of threads and items per request is challening
             while len(rsid_list) < 600:
                 item = self.lookup_q.get()
                 rsid_list.append(item)
@@ -91,9 +106,13 @@ class opensnp_Parser:
                     for rsid in data:
                         try:
                             if rsid == "snp": # This only happens when a single request is returned
-                                self.RSID_data[rsid_list[0]] = opensnp_Parser.extract_traits(data["snp"]["annotations"]["snpedia"])
+                                rsid_traits = opensnp_Parser.extract_traits(data["snp"]["annotations"]["snpedia"])
+                                weight_of_evidence = opensnp_Parser.compute_weight_of_evidence(data["snp"]["annotations"])
+                                self.RSID_data[rsid_list[0]] = {"weight" : weight_of_evidence, "traits" : rsid_traits}
                             else:
-                                self.RSID_data[rsid] = opensnp_Parser.extract_traits(data[rsid]["annotations"]["snpedia"])
+                                rsid_traits = opensnp_Parser.extract_traits(data[rsid]["annotations"]["snpedia"])
+                                weight_of_evidence = opensnp_Parser.compute_weight_of_evidence(data[rsid]["annotations"])
+                                self.RSID_data[rsid] = {"weight" : weight_of_evidence, "traits" : rsid_traits}
                         except:
                             print("Error reading returned data:")
                             print("Data for ", rsid, ":")
@@ -146,7 +165,6 @@ class opensnp_Parser:
         # Return the massive dictionary of RSIDs and traits
         return self.RSID_data
 
-
     # Determines the complement of the passed in genotype and returns a tuple of
     # allele pairs that are equivalent when searching for matches.
     # Code provided by Valeska
@@ -155,13 +173,22 @@ class opensnp_Parser:
                     'G' : 'C',
                     'T' : 'A',
                     'C' : 'G' }
-        if len(alleles) == 2:
-            return compDict[alleles[0]] + compDict[alleles[1]], \
-                   compDict[alleles[1]] + compDict[alleles[0]], \
-                   alleles, \
-                   alleles[-1::-1]
+        alleles = alleles.upper()
+        # if len(alleles) == 2:
+        #     return compDict[alleles[0]] + compDict[alleles[1]], \
+        #            compDict[alleles[1]] + compDict[alleles[0]], \
+        #            alleles, \
+        #            alleles[-1::-1]
+        # else:
+        #     return alleles, compDict[alleles]
+        if(len(alleles) == 2 and "D" not in alleles and "I" not in alleles):
+            return compDict[alleles[0]] + compDict[alleles[1]], compDict[alleles[1]] + compDict[alleles[0]], alleles, alleles[-1::-1]
+        elif("D" in alleles or "I" in alleles and len(alleles) == 2):
+            return alleles, alleles[-1::-1]
+        elif("D" in alleles or "I" in alleles and len(alleles) == 1):
+            return alleles
         else:
-            return alleles, compDict[alleles]
+            return compDict[alleles[0]], alleles
     
     # Match users specific genotype with with one from the list of traits. We first
     # compute the complements of the passed in genotype and create a list containing
