@@ -19,8 +19,12 @@ class test_data_collector(unittest.TestCase):
         self.assertEqual(collector.interesting_RSIDs, list)
         print(collector.RSID_data)
         print (collector.interesting_RSIDs)
-        
+    
+    # check if the function gets snp list correctly
     def test_get_snp_list(self):
+        list1 = get_snp_list(snp_list.txt)
+        list2 = ["rs548049170", "rs9283150", "rs116587930", "rs3131972", "rs12184325"]
+        self.assertEqual(list1, list2)
     
     
 if __name__ == "__main__":
