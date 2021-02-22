@@ -11,6 +11,7 @@ class Test_user_data_parser_test(unittest.TestCase):
     # check if bulk worker returns correct data on given snps      
     def test_fetch_bulk_worker(self):
         parser = opensnp_Parser()
+        # check the follwing rsids
         rsids = ["rs12979860", "rs8099917", "rs6983267", "rs671", "rs4420638" ]
         parser.fetch_bulk_RSID_info(rsids)
         for rsid in rsids:
