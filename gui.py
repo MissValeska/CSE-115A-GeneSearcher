@@ -19,9 +19,6 @@ class App(Frame):
         self.master.title("GeneSearcher")
         self.pack(fill=BOTH, expand=True)
 
-        # init search variable for search bar
-        #Search = tk.StringVar()
-
         # init background
         background_image = tk.PhotoImage(file='./GUI/Assets/background3.png')
         background_label = tk.Label(self, image=background_image)
@@ -55,49 +52,6 @@ class App(Frame):
     def display_report(self, report):
         self.report_frame.update_report(report)
 
-    #def search_loop(tto_find, tto_search):
-      #  countVar = tk.StringVar()
-      #  pos = tto_search.search(tto_find, "1.0", stopindex="end", count=countVar)
-      #  tto_search.tag_add("search", pos, "%s + %sc" (pos, countVar.get()))
-      #  print(tto_find.get())
-
-    def find(self, entry, display):
-        '''
-        Function bound to search bar functionality, specifically find_button
-        in gui.py. Stores word to be searched for and times the search has been
-        clicked globally, as well as init a list storing indices of highlighted
-        words. Word storage is used to check if a new word is entered so clicks
-        can be reset, and clicks will allow us to snap to specific stored indices
-        in the text display.
-        PARAMS : Entry text box and the text box displaying the report.
-        '''
-
-        idx_list = []
-        display.tag_remove("search", '1.0', END)
-        e = entry.get()
-
-        if e != self.word_storage:
-            self.click_storage = 0
-            self.word_storage = e
-
-        if e:
-            idx = '1.0'
-            while 1:
-                idx = display.search(e, idx, nocase=1, stopindex=END)
-
-                if not idx: break
-
-                lastidx = '%s+%dc' % (idx, len(e))
-                idx_list.append(idx)
-
-                display.tag_add("search", idx, lastidx)
-
-                idx = lastidx
-
-            if self.click_storage > len(idx_list) - 1:
-                self.click_storage = 0
-            if len(idx_list) != 0: display.see(idx_list[self.click_storage])
-            self.click_storage = self.click_storage + 1
 
 class InputFrame(tk.Frame):
     def __init__(self, master=None, fn=None):
@@ -129,6 +83,7 @@ class ReportFrame(tk.Frame):
         self.search_bar = tk.Entry(top_bar)
         self.search_bar.config(highlightthickness=0)
         self.search_bar.config(highlightbackground='#a8327f')
+        self.search_bar.bind("<Return>", lambda value : self.find(self.search_bar, self.r_display))
 
         self.find_button = tk.Button(top_bar, text="Search Results", fg='black', command=lambda : self.find(self.search_bar, self.r_display))
         self.find_button.config(highlightthickness=0)
@@ -145,7 +100,7 @@ class ReportFrame(tk.Frame):
         self.r_display = tk.Text(self)
         self.r_display.place(rely=0.15, relwidth=1, relheight=0.85)
         # add properties of widgets
-        self.r_display.tag_configure("search", background="green")
+        self.r_display.tag_configure("search", background="yellow")
         
         # quick break to create a trace for search bar
         # Search.trace("w", lambda name, index, mode, Search=Search: search_loop(Search, r_display))
