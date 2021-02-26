@@ -1,21 +1,4 @@
-import user_data_parser
 import sys, time, requests, json, csv
-
-def load_user_data(data_file):
-    user_data = user_data_parser.parse_user_data(data_file)
-    return user_data
-
-def load_data_set_from_file(data_file):
-    data_set = dict()
-    with open(data_file) as f:
-        data_set = json.load(f) 
-    return data_set
-
-def load_data_set_from_server():
-    url = "https://playground-53aee-default-rtdb.firebaseio.com/.json"
-    json_data = requests.get(url)
-    data_set = json.loads(json_data.text)
-    return data_set
 
 # Determines the complement of the passed in genotype and returns a tuple of
 # allele strings that are equivalent when searching for matches.
@@ -76,35 +59,26 @@ def process_user_data(user_data, data_set):
                     report[rsid] = (user_genotype, expression, weight)
     return report
 
-def user_report_to_json(user_data, filename):
-    with open(filename, "w") as outfile:
-        json.dump(user_data, outfile)
+# if __name__ == "__main__":
+#     user_data_file = sys.argv[1]
+#     if len(sys.argv) == 3:
+#         data_file = sys.argv[2]
+#     else:
+#         data_file = None
 
-def user_report_to_csv(user_data, filename):
-    with open(filename, "w") as outfile:
-        for rsid in user_data:
-            outfile.write("%s,%s,%s,%s\n"%(rsid, user_data[rsid][0], user_data[rsid][1], user_data[rsid][2]))
+#     # Read users genetic data from file
+#     user_genetic_data = load_user_data(user_data_file)
+#     # Load the data set
+#     if data_file != None:
+#         data_set = load_data_set_from_file(data_file)
+#     else:
+#         data_set = load_data_set_from_server()
 
-if __name__ == "__main__":
-    user_data_file = sys.argv[1]
-    if len(sys.argv) == 3:
-        data_file = sys.argv[2]
-    else:
-        data_file = None
+#     # Process users data and generate report data
+#     report = process_user_data(user_genetic_data, data_set)
 
-    # Read users genetic data from file
-    user_genetic_data = load_user_data(user_data_file)
-    # Load the data set
-    if data_file != None:
-        data_set = load_data_set_from_file(data_file)
-    else:
-        data_set = load_data_set_from_server()
-
-    # Process users data and generate report data
-    report = process_user_data(user_genetic_data, data_set)
-
-    # Output report to terminal and files 
-    for item in report:
-        print(item, " - ", report[item])
-    user_report_to_json(report, "report.json")
-    user_report_to_csv(report, "report.csv")
+#     # Output report to terminal and files
+#     for item in report:
+#         print(item, " - ", report[item])
+#     user_report_to_json(report, "report.json")
+#     user_report_to_csv(report, "report.csv")
