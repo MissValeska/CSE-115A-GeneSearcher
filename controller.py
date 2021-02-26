@@ -20,7 +20,7 @@ class GeneSearcher_Controller:
     def input_data_file(self, filepath):
         self.model.load_user_data(filepath)
 
-    def generate_report(self, text_frame):
+    def generate_report(self):
         '''
         Primary backend linkage. Utilize functions from GeneSearcherProcessData.py
         to load in user data from file and data from server to compare to. Generates
@@ -29,4 +29,4 @@ class GeneSearcher_Controller:
         '''
         print("Generating Report for: " + self.model.get_input_file())
         report = self.model.generate_report()
-        self.view.display_report(text_frame, report)
+        self.view.display_report(report)
