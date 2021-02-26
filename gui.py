@@ -1,11 +1,8 @@
-from app_utils import *
+# from app_utils import *
 import tkinter as tk
-from tkinter import Tk, Text, filedialog, BOTH, W, N, E, S, CENTER, NW, Y, LEFT, X, RIGHT, BOTTOM, END
+from tkinter import Tk, Text, filedialog, BOTH, W, N, E, S, CENTER, NW, Y, LEFT, X, RIGHT, BOTTOM, END, DISABLED, NORMAL
 from tkinter.ttk import Frame, Button, Label, Style, LabelFrame
 import os
-
-#Establish global storage for data_path for future parsing
-data_path = ""
 
 class App(Frame):
     def __init__(self, root, vc):
@@ -14,6 +11,9 @@ class App(Frame):
         self.root = root
         self.root.geometry("400x500")
         self.initUI()
+
+        self.word_storage = ""
+        self.click_storage = 0
     
     def initUI(self):
         self.master.title("GeneSearcher")
@@ -114,15 +114,15 @@ class App(Frame):
         '''
 
         idx_list = []
-        global word_storage
-        global click_storage
+        # global word_storage
+        # global click_storage
 
         display.tag_remove("search", '1.0', END)
         e = entry.get()
 
-        if e != word_storage:
-            click_storage = 0
-            word_storage = e
+        if e != self.word_storage:
+            self.click_storage = 0
+            self.word_storage = e
 
         if e:
             idx = '1.0'
@@ -138,7 +138,7 @@ class App(Frame):
 
                 idx = lastidx
 
-            if click_storage > len(idx_list) - 1:
-                click_storage = 0
-            if len(idx_list) != 0: display.see(idx_list[click_storage])
-            click_storage = click_storage + 1
+            if self.click_storage > len(idx_list) - 1:
+                self.click_storage = 0
+            if len(idx_list) != 0: display.see(idx_list[self.click_storage])
+            self.click_storage = self.click_storage + 1
