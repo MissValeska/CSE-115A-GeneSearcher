@@ -48,7 +48,7 @@ class App(Frame):
         # quick break to create a trace for search bar
         #Search.trace("w", lambda name, index, mode, Search=Search: search_loop(Search, r_display))
         search_bar = tk.Entry(btm_frame)
-
+        search_bar.bind("<Return>", lambda value: self.find(search_bar, r_display))
         # layout the widgets in each frame
         upload_button.place(relheight=1, relwidth=0.3)
         search_button.place(relheight=1, relwidth=1)
@@ -58,7 +58,7 @@ class App(Frame):
         r_display.place(rely=0.15, relwidth=1, relheight=0.85)
 
         # add properties of widgets
-        r_display.tag_configure("search", background="green")
+        r_display.tag_configure("search", background="yellow")
 
     def o_log(self, frame):
         '''
@@ -70,7 +70,7 @@ class App(Frame):
 
         filepath = filedialog.askopenfilename(initialdir='/', title='Select File')
         u_lbl = tk.Label(frame, text=os.path.basename(filepath), bg='#a8327f')
-        u_lbl.place(relx=0.35, relwidth=0.3, relheight=1)
+        u_lbl.place(relx=0.35, relwidth=0.65, relheight=1)
         self.vc.input_data_file(filepath)
 
     def display_report(self, text_frame, report):
