@@ -26,7 +26,7 @@ class App(Frame):
         background_label.image = background_image
 
         # create all of the main containers
-        self.report_frame = ReportFrame(self.master)
+        self.report_frame = ReportFrame(self.master, self.vc.export_report)
         self.input_frame = InputFrame(self.master, self.o_log)
         self.run_frame = RunFrame(self.master, self.vc.generate_report)
 
@@ -72,7 +72,7 @@ class RunFrame(tk.Frame):
         self.search_button.config(highlightbackground='#a8327f')
 
 class ReportFrame(tk.Frame):
-    def __init__(self, master=None):
+    def __init__(self, master=None, export_fn = None):
         super().__init__(master=master, bg='#a8327f', bd=5)
         
         self.click_storage = 0
@@ -85,13 +85,18 @@ class ReportFrame(tk.Frame):
         self.search_bar.config(highlightbackground='#a8327f')
         self.search_bar.bind("<Return>", lambda value : self.find(self.search_bar, self.r_display))
 
-        self.find_button = tk.Button(top_bar, text="Search Results", fg='black', command=lambda : self.find(self.search_bar, self.r_display))
+        self.find_button = tk.Button(top_bar, text="Find", fg='black', command=lambda : self.find(self.search_bar, self.r_display))
         self.find_button.config(highlightthickness=0)
         self.find_button.config(highlightbackground='#a8327f')
+
+        self.export_button = tk.Button(top_bar, text="Export", fg='black', command= lambda : export_fn())
+        self.export_button.config(highlightthickness=0)
+        self.export_button.config(highlightbackground='#a8327f')
         
         self.r_lbl = tk.Label(top_bar, text="Results:", bg='#a8327f', font=5)
 
         self.r_lbl.pack(side=LEFT)
+        self.export_button.pack(side=LEFT)
         self.find_button.pack(side=LEFT)
         self.search_bar.pack(side=LEFT, fill=X, expand=True)
 
