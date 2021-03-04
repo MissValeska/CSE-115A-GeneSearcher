@@ -30,3 +30,8 @@ class GeneSearcher_Controller:
         print("Generating Report for: " + self.model.get_input_file())
         report = self.model.generate_report()
         self.view.display_report(report)
+        self.export_report()
+
+    def export_report(self, filepath = "report"):
+        self.model.user_report_to_csv(filepath + ".csv")
+        # self.model.user_report_to_json(filepath + ".json")
