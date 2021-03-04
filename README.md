@@ -13,7 +13,7 @@ On Windows the program can be run from the command line, or installed as a regul
 
 ## Future Improvements
 Future improvements include:
-* The ability name exported reports and choos export format (.csv, .json, plain text, etc)
+* The ability name exported reports and choose export format (.csv, .json, plain text, etc)
 * A filtered report option. The user should be able to query for specific traits they are interested in and the program will generate a report containing only data relevant to that query.
 * An information window that can help the user understand where / how to access there raw genetic material from websites such as 23AndMe
 * Context discovery system that can use context provided by academic articles in dataset to understand what issues certain snps are related to. The current data set includes data points which have statements such as "10% increased risk" but do not include the necessary context to understand what that increased risk relates to. This context can usually be found in the referenced articles linked to by opensnp. A system that can crawl these articles in the data collection process and discover that context would greatly increase the usefulness of the product.
