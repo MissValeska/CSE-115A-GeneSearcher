@@ -15,19 +15,19 @@ On Windows the program can be run from the command line, or installed as a regul
 
 The main interface of the program contains a button to select a data file and begin processing and a report frame where the data will be stored.
 
-![Screen Shot 2021-03-05 at 11.47.07 AM](./Screenshots/Screen Shot 2021-03-05 at 11.47.07 AM.png)
+![Screen Shot 2021-03-05 at 11.47.07 AM](./Screenshots/ScreenShot5.png)
 
 Simply click Upload Data to select the file that you would like to work with and a file selection dialog will open. Select your file and press open
 
-![](./Screenshots/Screen Shot 2021-03-05 at 11.47.27 AM.png)
+![](./Screenshots/ScreenShot4.png)
 
 Press "Being Search" to start processing your data.
 
-![Screen Shot 2021-03-05 at 11.47.49 AM](./Screenshots/Screen Shot 2021-03-05 at 11.47.49 AM.png)
+![Screen Shot 2021-03-05 at 11.47.49 AM](./Screenshots/ScreenShot3.png)
 
 The Export button will write the data to a file in the current directory named Report.csv and the Find button will move to and highlight the next instance of the value entered in to the search bar.
 
-![](./Screenshots/Screen Shot 2021-03-05 at 11.48.09 AM.png)
+![](./Screenshots/ScreenShot1.png)
 
 ## Future Improvements
 Future improvements include:
