@@ -1,7 +1,7 @@
 # from app_utils import *
 import tkinter as tk
-from tkinter import Tk, Text, filedialog, BOTH, W, N, E, S, CENTER, NW, Y, LEFT, X, RIGHT, BOTTOM, END, DISABLED, NORMAL, Toplevel
-from tkinter.ttk import Frame, Button, Label, Style, LabelFrame
+from tkinter import Tk, Text, filedialog, BOTH, CENTER, N, NW, Y, LEFT, X, END, DISABLED, Toplevel
+from tkinter.ttk import Frame, Button, Label
 import os
 
 class App(Frame):

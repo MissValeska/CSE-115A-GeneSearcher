@@ -1,7 +1,7 @@
 # CSE-115A-GeneSearcher
 GeneSearcher allows the user discover information about themselves, based on their genetic data, using open resources. This is a class project for CSE 115A Intro to Software Engineering.
 
-Users are able to input a text file containing their genetic information (these files are commonly available from commercial DNA testing services such as 23AndMe) then the program automatically process their genotype and check it's own dataset for entries matching the users particular genotype that might have interesting information. It then creates simple report based on it's findings wich are presented to the user.
+Users are able to input a text file containing their genetic information (these files are commonly available from commercial DNA testing services such as 23AndMe) then the program automatically processes their genotype and checks it's own dataset for entries matching the users particular genotype that might have interesting information. It then creates simple report based on it's findings which are presented to the user.
 
 ## Usage
 ### MacOS
@@ -9,7 +9,8 @@ On MacOS the program must be run at the command line from its containing directo
 `python3 main.py`
 
 ### Windows
-On Windows the program can be run from the command line, or installed as a regular desktop applicaton.
+On Windows the program can be run from the command line, or installed as a regular desktop applicaton with 
+the provided Windows installer. An installation guide is provided below the usage section.
 
 ### Program Usage
 
@@ -21,13 +22,28 @@ Simply click Upload Data to select the file that you would like to work with and
 
 ![](./Screenshots/ScreenShot4.png)
 
-Press "Being Search" to start processing your data.
+Press "Begin Search" to start processing your data.
 
 ![Screen Shot 2021-03-05 at 11.47.49 AM](./Screenshots/ScreenShot3.png)
 
 The Export button will write the data to a file in the current directory named Report.csv and the Find button will move to and highlight the next instance of the value entered in to the search bar.
 
 ![](./Screenshots/ScreenShot1.png)
+
+## Windows Installation Guide
+The repository includes the GS_Windows_Installer, which is all that is needed to deliver an executable of the GeneSearcher application and all its dependencies. In your directory it should look something like this:
+
+![Screen Shot 2021-03-07 at 7.37.30 PM](./Screenshots/ScreenShot6.png)
+
+When you have that, simply run the installer. Here you can specify a certain directory into which the GeneSearcher application and its dependencies will be downloaded into.
+
+![Screen Shot 2021-03-07 at 7.47.23 PM](./Screenshots/ScreenShot7.PNG)
+
+Now the GeneSearcher folder should be downloaded to your specified location. In the folder, you will find an executable application named "GeneSearcher".
+ 
+![Screen Shot 2021-03-07 at 7.49.52 PM](./Screenshots/ScreenShot8.PNG)
+
+Now you have successfully installed GeneSearcher! If desired, you can create a shortcut to this application to access it via your Desktop.
 
 ## Future Improvements
 Future improvements include:

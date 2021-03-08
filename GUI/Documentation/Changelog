@@ -11,15 +11,12 @@ Done:
     - Display results
     - Rudimentary Search bar Functionality
     - Snap to searched word + words after with more clicks
+    - Streamlined Search Bar
 
 In progress:
-    - Safety for functions without appropriate pre-conditions (search with no file etc)
-    - Streamlining search bar
 
 NOTES:
-    - Having issues with Text Box overwriting Frame area
-    - Can display data in table format through various means -- may use pandas?
-        - Convert results to pandas db -> iterable -> display by rows columns
-        - Will require more research
-    - If having trouble with display, can also output file.
-    - ^^^^ OUTDATED ^^^^^
+    - Future Updates:
+        - Filtered report export functionality
+        - Updated GUI
+        - New window opens for filtered report
