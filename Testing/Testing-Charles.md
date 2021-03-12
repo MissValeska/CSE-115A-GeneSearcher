@@ -32,6 +32,7 @@ User should be able to start the applicaton, select a data file, initiate data p
 All functions seem to work as expected under this scenario.
 
 **Using the application without internet connection:**
+
 I tested the application with out internet connection to see how it would handle being unable to download the dataset. The methodology was simply to disable my network interface and perform the test noted above.
 
 Under this scenario an exception is thrown when attempting to load the dataset and the application fails to load.
