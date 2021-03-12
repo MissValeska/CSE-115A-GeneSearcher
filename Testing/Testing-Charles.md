@@ -2,7 +2,22 @@
 
 ## Module: Model
 
-I wrote unit tests for the Model module in `test_Genesearcher_model.py` that test functions of the module for correct output.
+I wrote unit tests for the Model module in `test_Genesearcher_model.py` that test functions of the module for correct output. I created 3 test classes using the python unittest library: `GenesearcherModelTestSettersGetters`, `GenesearcherModelTestProcessing`, and `GenesearcherModelTestReportOutput`.
+
+`GenesearcherModelTestSettersGetters` tests the setter and getter methods which are trivial. Because these methods simply take in a value and assign it a member variable or return the value of a memeber variable, without any additional processing their is only one equivalency class the setters and getters. I tested them by setting up a model object, calling the setter with some test data, and then calling the coresponding getter and verifying that the returned value matches the object that was passed in to the setter.
+
+`GenesearcherModelTestProcessing` tests the processing functions which are meant to generate a report. The following tests are provided
+
+* `test_load_user_data_no_header`: tests that the model is able to read a users data file that is not formatted with a header.
+* `test_load_user_data_with_header`: tests that the model is able to read a users data file that is formatted with a header
+* `test_test_load_data_set_from_file`: tests that the model is able to load a data set from a file
+* `test_load_data_set_from_server`: tests that the `load_data_set_from_server` function sets the data_set member of the object
+* `test_generate_report`: given some user data, and a loaded data set, tests that the `generate_report` method produces the expected output.
+
+ `GenesearcherModelTestReportOutput`: Tests the output of the report generation functionality.
+
+* `test_report_to_json`: Loads a report and and then writes it to a json file and checks that the output matches our expected output.
+* 'test_report_to_csv': Loads a report and and then writes it to a csv file and checks that the output matches our expected output.
 
 ## Manual Applicaton Testing
 
